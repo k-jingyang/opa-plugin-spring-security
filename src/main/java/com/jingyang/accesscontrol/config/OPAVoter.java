@@ -1,12 +1,9 @@
 package com.jingyang.accesscontrol.config;
 
-import com.jingyang.accesscontrol.domain.PACL;
-import com.jingyang.accesscontrol.mapper.AccessControlMapper;
 import com.jingyang.accesscontrol.opa.OPADataRequest;
 import com.jingyang.accesscontrol.opa.OPADataResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
@@ -21,14 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class KmoOPAVoter implements AccessDecisionVoter<Object> {
+public class OPAVoter implements AccessDecisionVoter<Object> {
 
-    Logger log = LoggerFactory.getLogger(KmoOPAVoter.class);
+    Logger log = LoggerFactory.getLogger(OPAVoter.class);
 
     private final String opaUrl = "http://localhost:8181/v1/data/http/authz/allow";
-
-    @Autowired
-    AccessControlMapper accessControlMapper;
 
     @Override
     public boolean supports(ConfigAttribute attribute) {
@@ -65,17 +59,6 @@ public class KmoOPAVoter implements AccessDecisionVoter<Object> {
         String[] path = requestURI.replaceFirst("/", "").split("/");
         input.put("path", path);
         input.put("headers", headers);
-
-        // For /api/v1/pokemon/X
-        if (requestURI.startsWith("/api/v1/pokemon/")) {
-            String pokemonId = path[3];
-
-            PACL pokemonACL = accessControlMapper.getPACL(Long.parseLong(pokemonId));
-            if(pokemonACL != null) {
-                input.put("pacl", pokemonACL.getTeamToRolesHashMap());
-            }
-        }
-
         RestTemplate client = new RestTemplate();
         HttpEntity<?> request = new HttpEntity<>(new OPADataRequest(input));
         OPADataResponse response =

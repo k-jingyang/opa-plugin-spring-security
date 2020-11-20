@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.2.6.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'com.bisnode.opa' version '0.3.0'
 }
 
 group = 'com.jingyang'
@@ -16,6 +17,10 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+}
+
+opa {
+	srcDir      = 'opa/policy'        // default: src/main/rego
 }
 
 repositories {
@@ -42,3 +47,5 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+test.dependsOn(startOpa)

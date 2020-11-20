@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     @Autowired
-    KmoOPAVoter kmoOPAVoter;
+    OPAVoter OPAVoter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AccessDecisionManager accessDecisionManager() {
-        return new UnanimousBased(Arrays.asList(new WebExpressionVoter(), kmoOPAVoter));
+        return new UnanimousBased(Arrays.asList(new WebExpressionVoter(), OPAVoter));
     }
 
     @Bean

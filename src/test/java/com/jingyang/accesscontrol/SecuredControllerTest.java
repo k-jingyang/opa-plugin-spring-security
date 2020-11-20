@@ -1,6 +1,6 @@
 package com.jingyang.accesscontrol;
 
-import com.jingyang.accesscontrol.domain.VillainUser;
+import com.jingyang.accesscontrol.domain.UserInfo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -35,30 +35,14 @@ class SecuredControllerTest {
 		mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
 	}
 
-	// These tests verifies the integration with OPA (i.e. correct information is sent to OPA and OPA's response is interpreted correctly)
-	// Further policy testing to be done on OPA
 	@Test
-	public void testHasAccessToGeneralInfo() throws Exception {
-		VillainUser galacticGrunt = VillainUser.builder()
-				.teams(Arrays.asList(
-						"GALACTIC"
-				))
+	public void testHasAccessToResource() throws Exception {
+		UserInfo mockUser = UserInfo.builder()
 				.roles(Arrays.asList(
 						"USER"
 				)).build();
-		mvc.perform(get("/api/v1/pokemon/1").with(user(galacticGrunt))).andExpect(status().isOk());
+		for(int i =0; i < 10000; i++) {
+			mvc.perform(get("/api/v1/resource/1").with(user(mockUser))).andExpect(status().isOk());
+		}
 	}
-
-	@Test
-	public void testNoAccessToLocationInfo() throws Exception {
-		VillainUser magmaGrunt = VillainUser.builder()
-				.teams(Arrays.asList(
-						"MAGMA"
-				))
-				.roles(Arrays.asList(
-						"USER"
-				)).build();
-		mvc.perform(get("/api/v1/pokemon/1/location").with(user(magmaGrunt))).andExpect(status().isForbidden());
-	}
-
 }

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class VillainUser implements UserDetails {
+public class UserInfo implements UserDetails {
 
     private String username;
     @JsonIgnore
