@@ -41,6 +41,8 @@ class SecuredControllerTest {
 				.roles(Arrays.asList(
 						"USER"
 				)).build();
+
+		// Increase threshold of i
 		for(int i =0; i < 10000; i++) {
 			mvc.perform(get("/api/v1/resource/1").with(user(mockUser))).andExpect(status().isOk());
 		}
